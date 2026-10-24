@@ -32,7 +32,7 @@ export default function Home() {
               Jika nama file Anda "Wisecho logo.JPG", ubah menjadi "wisecho-logo.jpg" di folder public.
             */}
             <img 
-              src="/Wisecho logo.JPG" 
+              src="/logo.jpeg" 
               alt="Wisdom Echo Logo" 
               className="w-full h-full object-contain"
             />
