@@ -15,7 +15,7 @@ export default function Home() {
         <div className="flex flex-col gap-6 text-center md:text-left">
           <h1 className="text-5xl md:text-7xl font-bold uppercase tracking-wider leading-tight">
             Wisdom in Character, <br />
-            <span className="text-[#E52B2B]">Echoing in the Future.</span>
+            <span className="text-[#E52B2B]">Echoing in <br/>the Future.</span>
           </h1>
           
           {/* Teks Deskripsi (English) */}
