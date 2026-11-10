@@ -20,13 +20,19 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// app/layout.tsx
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">{children}</body>
+    // Tambahkan data-scroll-behavior="smooth" di sini
+    <html lang="en" data-scroll-behavior="smooth">
+      <body>
+        {children}
+      </body>
     </html>
   );
 }
