@@ -136,7 +136,7 @@ export default function Experience() {
             <motion.div 
               className="text-3xl md:text-4xl drop-shadow-[0_0_8px_rgba(229,43,43,0.8)]"
               animate={{ 
-                rotate: isScrollingDown ? -90 : 90 
+                rotate: isScrollingDown ? 90 : -90 
               }}
               transition={{ 
                 type: "spring", 
