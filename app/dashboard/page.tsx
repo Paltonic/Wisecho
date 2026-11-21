@@ -67,7 +67,7 @@ export default function DashboardPage() {
         </div>
 
         <section id="kanji">
-          <StudyHub embedded />
+          <StudyHub />
         </section>
       </div>
     </main>
