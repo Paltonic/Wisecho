@@ -1,4 +1,5 @@
 import Link from "next/link";
+import StudyHub from "@/components/StudyHub";
 
 export default function DashboardPage() {
   return (
@@ -64,6 +65,10 @@ export default function DashboardPage() {
             <li>▹ Paid invoice #INV-2026-001</li>
           </ul>
         </div>
+
+        <section id="kanji">
+          <StudyHub embedded />
+        </section>
       </div>
     </main>
   );

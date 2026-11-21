@@ -1,0 +1,145 @@
+/* Kanji Study — matches Wisdom Echo's dark #1A1A1A / red #E52B2B look */
+.root {
+  --bg: #1a1a1a;
+  --card: #222222;
+  --card2: #2a2a2a;
+  --line: #333333;
+  --ink: #ffffff;
+  --soft: #888888;
+  --red: #e52b2b;
+  --red-dark: #c41e1e;
+  --redbg: #3a1d1d;
+  --ok: #3ecf8e;
+  --okbg: #16301f;
+  --grid: #5a2a2a;
+  --jp: "Hiragino Mincho ProN", "Yu Mincho", "YuMincho", "Noto Serif JP", "Noto Serif CJK JP", "MS Mincho", serif;
+  --jp-sans: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", "Noto Sans JP", "Noto Sans CJK JP", sans-serif;
+  color: var(--ink);
+  font-family: Arial, Helvetica, var(--jp-sans);
+}
+.root * { box-sizing: border-box; min-width: 0; }
+.page { max-width: 1200px; margin: 0 auto; padding: 120px max(5vw, 16px) 64px; }
+.embedded { margin-top: 40px; background: #242424; border: 1px solid var(--line); border-top: 4px solid var(--red); padding: clamp(18px, 3vw, 32px); scroll-margin-top: 24px; }
+.embedded .title { font-size: clamp(26px, 4vw, 40px); }
+.embedded .sheet, .embedded .paper, .embedded .tile, .embedded .chip:not(.chipOn), .embedded .search { background: #1d1d1d; }
+.embedded .ans, .embedded .btn:not(.primary):not(.red) { background: #2a2a2a; }
+
+/* Header */
+.head { margin-bottom: 8px; }
+.kicker { color: var(--red); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; margin: 0 0 8px; }
+.title { font-size: clamp(36px, 6vw, 64px); line-height: 1; font-weight: 900; text-transform: uppercase; margin: 0 0 10px; letter-spacing: -.01em; }
+.title span { color: var(--red); }
+.sub { color: var(--soft); font-size: 15px; margin: 0; }
+.prog { display: flex; align-items: center; gap: 12px; margin: 16px 0 4px; font-size: 14px; color: var(--soft); }
+.bar { flex: 1; max-width: 420px; height: 8px; background: var(--line); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--red); transition: width .4s; }
+
+/* Tabs, chips, options */
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin: 20px 0 16px; flex-wrap: wrap; }
+.tabs button { background: none; border: 0; color: var(--soft); font: inherit; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: 14px; padding: 12px 16px; min-height: 44px; cursor: pointer; border-bottom: 3px solid transparent; margin-bottom: -1px; }
+.tabs button:hover { color: var(--ink); }
+.tabs .on { color: var(--ink); border-color: var(--red); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.chip { border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 7px 14px; font: inherit; font-size: 14px; min-height: 38px; cursor: pointer; }
+.chip:hover { border-color: var(--soft); }
+.chipOn { background: var(--ink); color: #111; border-color: var(--ink); }
+.mine { border-color: var(--red); color: var(--red); }
+.mine.chipOn { background: var(--red); color: #fff; }
+.opts { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; color: var(--soft); margin-bottom: 16px; }
+.opts label { display: flex; gap: 8px; align-items: center; min-height: 40px; cursor: pointer; }
+.opts input { accent-color: var(--red); width: 16px; height: 16px; }
+
+/* Buttons */
+.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.btn { border: 1px solid var(--line); background: var(--card2); color: var(--ink); padding: 11px 20px; min-height: 44px; font: inherit; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; cursor: pointer; transition: background .2s; }
+.btn:hover { background: #333; }
+.primary { background: var(--red); border-color: var(--red); }
+.primary:hover { background: var(--red-dark); }
+.red { background: transparent; border-color: var(--red); color: var(--red); }
+.root button:focus-visible, .root select:focus-visible, .root input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+/* Flashcard sheet with genkō-yōshi practice square */
+.sheet { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: clamp(16px, 4vw, 40px); align-items: start; background: var(--card); border: 1px solid var(--line); padding: clamp(16px, 3vw, 32px); }
+.sq { position: relative; width: 100%; aspect-ratio: 1; border: 2px solid var(--grid); display: grid; place-items: center; cursor: pointer; color: var(--ink); padding: 0;
+  background:
+    repeating-linear-gradient(90deg, var(--grid) 0 6px, transparent 6px 12px) center / 100% 1px no-repeat,
+    repeating-linear-gradient(0deg, var(--grid) 0 6px, transparent 6px 12px) center / 1px 100% no-repeat,
+    #1d1d1d; }
+.kan { position: relative; font-family: var(--jp); font-size: clamp(120px, 24vw, 210px); line-height: 1; font-weight: 500; }
+.stamp { position: absolute; right: 10px; bottom: 10px; width: 54px; height: 54px; border: 3px solid var(--red); color: var(--red); display: grid; place-items: center; font: 700 15px/1.05 var(--jp); transform: rotate(-8deg); text-align: center; animation: stamp .25s ease-out; }
+@keyframes stamp { from { transform: rotate(-8deg) scale(1.6); opacity: 0; } }
+.hint { font-size: 13px; color: var(--soft); text-align: center; margin: 8px 0 0; }
+
+/* Kanji info */
+.meaning { font-size: 24px; font-weight: 800; margin: 0 0 10px; line-height: 1.25; }
+.rd { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0 0 16px; font-size: 17px; font-family: var(--jp-sans); }
+.rd dt { color: var(--soft); font-size: 13px; padding-top: 3px; text-transform: uppercase; letter-spacing: .06em; font-family: Arial, Helvetica, sans-serif; }
+.rd dd { margin: 0; }
+.exs { display: grid; gap: 8px; margin-bottom: 16px; }
+.ex { border-left: 3px solid #555; padding: 3px 0 3px 12px; }
+.exMine { border-left-color: var(--red); }
+.w { font-family: var(--jp); font-size: 22px; margin-right: 8px; }
+.r { color: #f3b0b0; font-family: var(--jp-sans); font-size: 15px; }
+.exMine .w, .exMine .r { color: #ff8a8a; }
+.m { display: block; color: var(--soft); font-size: 14px; }
+.ulab { font-size: 12px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: .08em; margin: 0 0 6px; }
+.jp { font-family: var(--jp-sans); }
+
+/* Quiz — laid out like the JLPT test booklet */
+.selLabel { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 14px; color: var(--soft); }
+.selLabel select { background: var(--card); color: var(--ink); border: 1px solid var(--line); padding: 8px 10px; min-height: 42px; font: inherit; font-family: var(--jp-sans); }
+.score { font-size: 15px; color: var(--soft); }
+.score b { color: var(--ink); font-size: 22px; }
+.paper { background: var(--card); border: 1px solid var(--line); padding: clamp(16px, 3vw, 32px); max-width: 880px; }
+.mon { font-family: var(--jp-sans); font-size: 16px; margin: 0 0 22px; line-height: 1.7; }
+.mon b { color: var(--red); margin-right: 8px; }
+.qline { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 20px; }
+.qno { flex: none; border: 1.5px solid var(--ink); min-width: 30px; height: 30px; display: grid; place-items: center; font-weight: 700; font-size: 15px; margin-top: 7px; padding: 0 4px; }
+.sent { font-family: var(--jp-sans); font-size: clamp(22px, 3.4vw, 28px); margin: 0; line-height: 1.7; }
+.sent u { text-decoration: none; border-bottom: 2px solid var(--red); padding-bottom: 1px; }
+.choices { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+.ans { display: flex; align-items: center; gap: 10px; text-align: left; min-height: 60px; border: 1px solid var(--line); background: var(--card2); color: var(--ink); font-family: var(--jp-sans); font-size: 19px; padding: 8px 12px; cursor: pointer; }
+.ans:hover:not(:disabled) { border-color: var(--red); }
+.ans:disabled { cursor: default; }
+.cn { flex: none; font-size: 13px; font-weight: 700; color: var(--soft); }
+.good { border-color: var(--ok); background: var(--okbg); }
+.bad { border-color: var(--red); background: var(--redbg); }
+.fb { padding: 12px 14px; margin-bottom: 14px; font-size: 15px; line-height: 1.6; }
+.fbGood { background: var(--okbg); border-left: 3px solid var(--ok); }
+.fbBad { background: var(--redbg); border-left: 3px solid var(--red); }
+.infoRow { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: start; }
+.kanSmall { font-family: var(--jp); font-size: 56px; line-height: 1; }
+
+/* Browse */
+.search { width: 100%; max-width: 520px; padding: 12px 14px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: inherit; font-size: 16px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; margin-top: 14px; }
+.tile { position: relative; background: var(--card); border: 1px solid var(--line); padding: 10px 6px 8px; text-align: center; cursor: pointer; color: var(--ink); font: inherit; transition: border-color .2s; }
+.tile:hover { border-color: var(--red); }
+.tileKan { display: block; font-family: var(--jp); font-size: 40px; line-height: 1.1; }
+.tile small { display: block; font-size: 12px; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.no { position: absolute; top: 4px; left: 6px; font-size: 11px; color: var(--soft); }
+.seal { position: absolute; top: 5px; right: 5px; width: 18px; height: 18px; background: var(--red); color: #fff; font: 11px/18px var(--jp); }
+
+/* Detail dialog */
+.overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, .75); display: grid; place-items: center; padding: 16px; z-index: 60; }
+.dialog { background: var(--card); border: 1px solid var(--line); width: min(720px, 100%); max-height: 90vh; overflow: auto; padding: clamp(16px, 3vw, 28px); display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; }
+
+.empty { color: var(--soft); padding: 30px 0; }
+.foot { color: #666; font-size: 13px; margin-top: 32px; max-width: 70ch; line-height: 1.6; }
+
+@media (max-width: 760px) {
+  .sheet { grid-template-columns: minmax(0, 1fr); }
+  .sheet .sq { max-width: 220px; margin: 0 auto; }
+  .sheet .kan { font-size: 150px; }
+  .choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ans { font-size: 17px; }
+  .dialog { grid-template-columns: minmax(0, 1fr); }
+  .dialog .sq { max-width: 150px; }
+}
+@media (max-width: 420px) {
+  .choices { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stamp { animation: none; }
+  .bar i { transition: none; }
+}

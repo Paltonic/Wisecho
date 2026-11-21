@@ -19,6 +19,11 @@ const demoAccounts = [
     password: '@student001',
     role: 'Private Student',
   },
+  {
+    username: 'dio@wisdomecho.edu',
+    password: '@student002',
+    role: 'Private Student',
+  },
 ];
 
 const validUsers = demoAccounts.map(({ username, password }) => ({
