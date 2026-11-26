@@ -51,22 +51,36 @@ const CONTENT: Record<string, () => ReactNode> = {
 };
 
 type Path = { subject?: string; level?: string; skill?: string };
-const KEY = "n3k_hubpath";
+/*
+  Each menu step has its own URL hash, e.g. /dashboard#study/japanese/N3/kanji,
+  so the browser/phone Back button goes back one step instead of leaving the dashboard.
+*/
+const PREFIX = "#study";
+const toHash = (p: Path) => [PREFIX, p.subject, p.level, p.skill].filter(Boolean).join("/");
+const fromHash = (h: string): Path => {
+  if (!h.startsWith(PREFIX)) return {};
+  const [, subject, level, skill] = h.split("/").map((x) => decodeURIComponent(x));
+  return { subject: subject || undefined, level: level || undefined, skill: skill || undefined };
+};
 
-// `embedded` is accepted (and ignored) so `<StudyHub embedded />` also compiles.
 export default function StudyHub(_props: { embedded?: boolean } = {}) {
   const [path, setPath] = useState<Path>({});
 
   useEffect(() => {
-    try {
-      const p = JSON.parse(localStorage.getItem(KEY) || "{}");
-      if (p && typeof p === "object") setPath(p);
-    } catch { /* ignore */ }
+    const sync = () => setPath(fromHash(window.location.hash));
+    sync();
+    window.addEventListener("popstate", sync);
+    window.addEventListener("hashchange", sync);
+    return () => {
+      window.removeEventListener("popstate", sync);
+      window.removeEventListener("hashchange", sync);
+    };
   }, []);
 
   const go = (p: Path) => {
     setPath(p);
-    try { localStorage.setItem(KEY, JSON.stringify(p)); } catch { /* ignore */ }
+    const h = toHash(p);
+    if (window.location.hash !== h) window.history.pushState(null, "", h);
     document.getElementById("study")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
