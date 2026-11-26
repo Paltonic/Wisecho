@@ -4,8 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { Frame, load, save, shuffle, useJson } from "./JlptDrills";
 
 /*
-  Persiapan TKA SMP – Matematika (original practice questions in the official TKA formats)
-  Data: /public/tka/smp-matematika.json
+  Persiapan TKA SD / SMP / SMA – Matematika (original practice questions in the official TKA formats)
+  Data: /public/tka/sd-matematika.json, smp-matematika.json, sma-matematika.json
   t: "pg"   Pilihan ganda (o = options, a = [correct index]; correct is written first)
      "mcma" Pilihan ganda kompleks, pilih semua yang benar (a = correct indexes)
      "kat"  Pilihan ganda kompleks model kategori (s = statements, k = true/false, cols = column labels)
@@ -30,7 +30,12 @@ type TQ = {
 type Mode = "all" | TQ["el"];
 type Card = { item: TQ; order: number[] };
 
-const EL: Record<TQ["el"], string> = { bil: "Bilangan", alj: "Aljabar", geo: "Geometri & Pengukuran", dat: "Data & Peluang" };
+export type TkaLevel = "sd" | "smp" | "sma";
+const LEVELS: Record<TkaLevel, { name: string; els: TQ["el"][]; labels: Partial<Record<TQ["el"], string>> }> = {
+  sd: { name: "TKA SD", els: ["bil", "geo", "dat"], labels: { bil: "Bilangan", geo: "Geometri & Pengukuran", dat: "Data" } },
+  smp: { name: "TKA SMP", els: ["bil", "alj", "geo", "dat"], labels: { bil: "Bilangan", alj: "Aljabar", geo: "Geometri & Pengukuran", dat: "Data & Peluang" } },
+  sma: { name: "TKA SMA", els: ["bil", "alj", "geo", "dat"], labels: { bil: "Bilangan", alj: "Aljabar & Fungsi", geo: "Geometri & Trigonometri", dat: "Data & Peluang" } },
+};
 const TYPE: Record<TQ["t"], string> = { pg: "Pilihan ganda", mcma: "Pilihan ganda kompleks · pilih semua yang benar", kat: "Pilihan ganda kompleks · kategori" };
 const LETTER = "ABCDE";
 
@@ -40,8 +45,10 @@ function isRight(item: TQ, pick: number[], cats: (boolean | null)[]) {
   return [...pick].sort().join(",") === want;
 }
 
-export default function TkaDrill() {
-  const { data, error } = useJson<TQ[]>("/tka/smp-matematika.json");
+export default function TkaDrill({ level = "smp" }: { level?: TkaLevel }) {
+  const L = LEVELS[level];
+  const EL = L.labels as Record<TQ["el"], string>;
+  const { data, error } = useJson<TQ[]>(`/tka/${level}-matematika.json`);
   const [mode, setMode] = useState<Mode>("all");
   const [deck, setDeck] = useState<Card[]>([]);
   const [i, setI] = useState(0);
@@ -51,7 +58,7 @@ export default function TkaDrill() {
   const [score, setScore] = useState(0);
   const [wrong, setWrong] = useState<TQ[]>([]);
 
-  useEffect(() => setMode(load<Mode>("tkamode", "all")), []);
+  useEffect(() => { const m = load<Mode>(`tkamode_${level}`, "all"); setMode(m === "all" || L.els.includes(m) ? m : "all"); }, [level]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const start = useCallback(
     (m: Mode, only?: TQ[]) => {
@@ -100,15 +107,15 @@ export default function TkaDrill() {
   const ready = cur ? (cur.item.t === "kat" ? cats.every((c) => c !== null) : pick.length > 0) : false;
 
   return (
-    <Frame kicker="Matematika · TKA SMP" title={["Persiapan", "TKA SMP"]}
+    <Frame kicker={`Matematika · ${L.name}`} title={["Persiapan", L.name]}
       sub="Latihan soal Matematika dengan bentuk soal TKA: pilihan ganda, pilihan ganda kompleks, dan model kategori. Setiap soal ada pembahasannya.">
       {error && <p className="jd-empty">Soal tidak bisa dimuat. Muat ulang halaman.</p>}
       {!data && !error && <p className="jd-empty">Memuat…</p>}
       {data && (
         <>
           <div className="jd-chips">
-            {(["all", "bil", "alj", "geo", "dat"] as Mode[]).map((m) => (
-              <button key={m} className={`jd-chip ${m === mode ? "jd-on" : ""}`} onClick={() => { setMode(m); save("tkamode", m); }}>
+            {(["all", ...L.els] as Mode[]).map((m) => (
+              <button key={m} className={`jd-chip ${m === mode ? "jd-on" : ""}`} onClick={() => { setMode(m); save(`tkamode_${level}`, m); }}>
                 {m === "all" ? "Semua" : EL[m]} <small>{m === "all" ? data.length : data.filter((q) => q.el === m).length}</small>
               </button>
             ))}

@@ -2,8 +2,14 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import KanjiStudy from "./KanjiStudy";
-import TkaDrill from "./TkaDrill";
+import TkaDrill, { type TkaLevel } from "./TkaDrill";
 import { VocabDrill, GrammarDrill, ReadingDrill, ListeningDrill } from "./JlptDrills";
+
+const TKA: { id: string; level: TkaLevel; label: string; note: string }[] = [
+  { id: "tka-sd", level: "sd", label: "Persiapan TKA SD", note: "Bilangan, geometri & pengukuran, data" },
+  { id: "tka-smp", level: "smp", label: "Persiapan TKA SMP", note: "Bilangan, aljabar, geometri, data & peluang" },
+  { id: "tka-sma", level: "sma", label: "Persiapan TKA SMA", note: "Matematika wajib: aljabar & fungsi, trigonometri, peluang" },
+];
 
 /*
   Study menu for the dashboard:
@@ -19,7 +25,7 @@ type Subject = { id: string; label: string; glyph: string; note: string };
 type Skill = { id: string; label: string; glyph: string; note: string };
 
 const SUBJECTS: Subject[] = [
-  { id: "math", label: "Math", glyph: "∑", note: "Persiapan TKA SMP" },
+  { id: "math", label: "Math", glyph: "∑", note: "Persiapan TKA SD · SMP · SMA" },
   { id: "science", label: "Science", glyph: "⚛", note: "Physics, chemistry, biology" },
   { id: "japanese", label: "Japanese", glyph: "日本語", note: "JLPT preparation N5 – N1" },
 ];
@@ -70,7 +76,7 @@ export default function StudyHub(_props: { embedded?: boolean } = {}) {
   // Breadcrumb
   const crumbs: { label: string; to: Path }[] = [{ label: "Study", to: {} }];
   if (subject) crumbs.push({ label: subject.label, to: { subject: subject.id } });
-  if (subject?.id === "math" && path.level) crumbs.push({ label: "TKA SMP", to: { subject: "math", level: path.level } });
+  if (subject?.id === "math" && path.level) crumbs.push({ label: (TKA.find((x) => x.id === path.level) || TKA[1]).label.replace("Persiapan ", ""), to: { subject: "math", level: path.level } });
   if (subject?.id === "japanese" && path.level) crumbs.push({ label: `JLPT ${path.level}`, to: { subject: "japanese", level: path.level } });
   if (skill && path.level) crumbs.push({ label: skill.label, to: { ...path } });
 
@@ -94,17 +100,20 @@ export default function StudyHub(_props: { embedded?: boolean } = {}) {
     heading = ["Math", "Programs"];
     body = (
       <div className="sh-grid sh-grid3">
-        <button className="sh-tile" onClick={() => go({ subject: "math", level: "tka-smp" })}>
-          <span className="sh-badge">Ready</span>
-          <span className="sh-glyph">TKA</span>
-          <span className="sh-label">Persiapan TKA SMP</span>
-          <span className="sh-note">Bilangan, aljabar, geometri, data & peluang</span>
-        </button>
+        {TKA.map((t) => (
+          <button key={t.id} className="sh-tile" onClick={() => go({ subject: "math", level: t.id })}>
+            <span className="sh-badge">Ready</span>
+            <span className="sh-glyph">{t.level.toUpperCase()}</span>
+            <span className="sh-label">{t.label}</span>
+            <span className="sh-note">{t.note}</span>
+          </button>
+        ))}
       </div>
     );
   } else if (subject.id === "math") {
-    heading = ["TKA", "SMP"];
-    body = <TkaDrill />;
+    const t = TKA.find((x) => x.id === path.level) || TKA[1];
+    heading = ["TKA", t.level.toUpperCase()];
+    body = <TkaDrill key={t.level} level={t.level} />;
   } else if (subject.id !== "japanese") {
     heading = [subject.label, ""];
     body = <ComingSoon what={subject.label} onBack={() => go({})} />;
