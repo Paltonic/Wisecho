@@ -2,13 +2,14 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import KanjiStudy from "./KanjiStudy";
+import { VocabDrill, GrammarDrill, ReadingDrill, ListeningDrill } from "./JlptDrills";
 
 /*
   Study menu for the dashboard:
   Subject (Math / Science / Japanese)
     → Japanese: JLPT Preparation (N5 … N1)
-      → Level: Vocabulary / Grammar / Listening / Kanji
-        → N3 Kanji = <KanjiStudy />
+      → Level: Vocabulary / Grammar / Reading / Listening / Kanji
+        → N3 Kanji = <KanjiStudy />, N3 Vocabulary = <VocabDrill />, N3 Grammar = <GrammarDrill />, N3 Reading = <ReadingDrill />
   Anything without content yet shows a "Coming soon" panel.
   To add content later, put a component in CONTENT below.
 */
@@ -28,6 +29,7 @@ const LEVEL_NOTE: Record<string, string> = {
 const SKILLS: Skill[] = [
   { id: "vocab", label: "Vocabulary", glyph: "語", note: "Words & expressions" },
   { id: "grammar", label: "Grammar", glyph: "文", note: "Sentence patterns" },
+  { id: "reading", label: "Reading", glyph: "読", note: "Passages & info search" },
   { id: "listening", label: "Listening", glyph: "聴", note: "Audio practice" },
   { id: "kanji", label: "Kanji", glyph: "漢", note: "Readings & writing" },
 ];
@@ -35,12 +37,17 @@ const SKILLS: Skill[] = [
 /* Which pages have real content: key = "level/skill" */
 const CONTENT: Record<string, () => ReactNode> = {
   "N3/kanji": () => <KanjiStudy embedded />,
+  "N3/vocab": () => <VocabDrill />,
+  "N3/grammar": () => <GrammarDrill />,
+  "N3/reading": () => <ReadingDrill />,
+  "N3/listening": () => <ListeningDrill />,
 };
 
 type Path = { subject?: string; level?: string; skill?: string };
 const KEY = "n3k_hubpath";
 
-export default function StudyHub() {
+// `embedded` is accepted (and ignored) so `<StudyHub embedded />` also compiles.
+export default function StudyHub(_props: { embedded?: boolean } = {}) {
   const [path, setPath] = useState<Path>({});
 
   useEffect(() => {
@@ -99,7 +106,7 @@ export default function StudyHub() {
   } else if (!skill) {
     heading = [`JLPT ${path.level}`, "Skills"];
     body = (
-      <div className="sh-grid sh-grid4">
+      <div className="sh-grid sh-grid5">
         {SKILLS.map((s) => {
           const ready = !!CONTENT[`${path.level}/${s.id}`];
           return (
