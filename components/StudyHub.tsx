@@ -2,6 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import KanjiStudy from "./KanjiStudy";
+import TkaDrill from "./TkaDrill";
 import { VocabDrill, GrammarDrill, ReadingDrill, ListeningDrill } from "./JlptDrills";
 
 /*
@@ -18,7 +19,7 @@ type Subject = { id: string; label: string; glyph: string; note: string };
 type Skill = { id: string; label: string; glyph: string; note: string };
 
 const SUBJECTS: Subject[] = [
-  { id: "math", label: "Math", glyph: "∑", note: "Numbers, algebra, geometry" },
+  { id: "math", label: "Math", glyph: "∑", note: "Persiapan TKA SMP" },
   { id: "science", label: "Science", glyph: "⚛", note: "Physics, chemistry, biology" },
   { id: "japanese", label: "Japanese", glyph: "日本語", note: "JLPT preparation N5 – N1" },
 ];
@@ -69,6 +70,7 @@ export default function StudyHub(_props: { embedded?: boolean } = {}) {
   // Breadcrumb
   const crumbs: { label: string; to: Path }[] = [{ label: "Study", to: {} }];
   if (subject) crumbs.push({ label: subject.label, to: { subject: subject.id } });
+  if (subject?.id === "math" && path.level) crumbs.push({ label: "TKA SMP", to: { subject: "math", level: path.level } });
   if (subject?.id === "japanese" && path.level) crumbs.push({ label: `JLPT ${path.level}`, to: { subject: "japanese", level: path.level } });
   if (skill && path.level) crumbs.push({ label: skill.label, to: { ...path } });
 
@@ -88,6 +90,21 @@ export default function StudyHub(_props: { embedded?: boolean } = {}) {
         ))}
       </div>
     );
+  } else if (subject.id === "math" && !path.level) {
+    heading = ["Math", "Programs"];
+    body = (
+      <div className="sh-grid sh-grid3">
+        <button className="sh-tile" onClick={() => go({ subject: "math", level: "tka-smp" })}>
+          <span className="sh-badge">Ready</span>
+          <span className="sh-glyph">TKA</span>
+          <span className="sh-label">Persiapan TKA SMP</span>
+          <span className="sh-note">Bilangan, aljabar, geometri, data & peluang</span>
+        </button>
+      </div>
+    );
+  } else if (subject.id === "math") {
+    heading = ["TKA", "SMP"];
+    body = <TkaDrill />;
   } else if (subject.id !== "japanese") {
     heading = [subject.label, ""];
     body = <ComingSoon what={subject.label} onBack={() => go({})} />;
@@ -126,7 +143,7 @@ export default function StudyHub(_props: { embedded?: boolean } = {}) {
     body = render ? render() : <ComingSoon what={`JLPT ${path.level} ${skill.label}`} onBack={() => go({ subject: "japanese", level: path.level })} />;
   }
 
-  const inKanji = !!(skill && path.level && CONTENT[`${path.level}/${skill.id}`]);
+  const inKanji = !!(skill && path.level && CONTENT[`${path.level}/${skill.id}`]) || (subject?.id === "math" && !!path.level);
 
   return (
     <section id="study" className="sh-root">

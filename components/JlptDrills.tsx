@@ -24,7 +24,7 @@ type Passage = {
   qs: RQ[];
 };
 
-const shuffle = <T,>(a: T[]): T[] => {
+export const shuffle = <T,>(a: T[]): T[] => {
   const b = a.slice();
   for (let i = b.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -32,7 +32,7 @@ const shuffle = <T,>(a: T[]): T[] => {
   }
   return b;
 };
-const load = <T,>(key: string, fallback: T): T => {
+export const load = <T,>(key: string, fallback: T): T => {
   try {
     const v = localStorage.getItem("jd_" + key);
     return v == null ? fallback : (JSON.parse(v) as T);
@@ -40,14 +40,14 @@ const load = <T,>(key: string, fallback: T): T => {
     return fallback;
   }
 };
-const save = (key: string, v: unknown) => {
+export const save = (key: string, v: unknown) => {
   try {
     localStorage.setItem("jd_" + key, JSON.stringify(v));
   } catch {
     /* storage unavailable */
   }
 };
-function useJson<T>(url: string) {
+export function useJson<T>(url: string) {
   const [data, setData] = useState<T | null>(null);
   const [error, setError] = useState(false);
   useEffect(() => {
@@ -69,7 +69,7 @@ function Underline({ s }: { s: string }) {
   );
 }
 
-function Frame({ kicker, title, sub, children }: { kicker: string; title: [string, string]; sub: string; children: ReactNode }) {
+export function Frame({ kicker, title, sub, children }: { kicker: string; title: [string, string]; sub: string; children: ReactNode }) {
   return (
     <div className="jd-root">
       <style>{DRILL_CSS}</style>
